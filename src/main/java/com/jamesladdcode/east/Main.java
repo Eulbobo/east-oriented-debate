@@ -4,15 +4,9 @@ import java.io.PrintWriter;
 
 import com.jamesladdcode.east.interfaces.Movie;
 import com.jamesladdcode.east.interfaces.MovieAction;
+import com.jamesladdcode.east.interfaces.MovieFinder;
 
 public class Main {
-
-    public static void main(final String[] args) {
-        new ExampleMovieLister((action) -> findAllAndApply(action))
-                .applyToTheMovies(
-                        (movie) -> movie.doActionWithDirector("David Lynch",
-                                (m) -> m.printOn(new PrintWriter(System.out))));
-    }
 
     private static final Movie[] movies = {
             new ExampleMovie("StarWars", "George Lucus"),
@@ -23,9 +17,20 @@ public class Main {
             new ExampleMovie("Wild At Heart", "David Lynch")
     };
 
-    public static void findAllAndApply(final MovieAction selector) {
+    public static void visitAndApplyAction(final MovieAction selector) {
         for (int i = 0; i < movies.length; i++) {
             selector.applyTo(movies[i]);
         }
     }
+
+    public static void findAndApply(final MovieFinder finder, final MovieAction action) {
+        finder.findAllAndApply(action);
+    }
+
+    public static void main(final String[] args) {
+        findAndApply((action) -> visitAndApplyAction(action),
+                (movie) -> movie.doActionWithDirector("David Lynch",
+                        (m) -> m.printOn(new PrintWriter(System.out))));
+    }
+
 }
